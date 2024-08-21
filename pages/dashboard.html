@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Dashboard</h2>
+    <div id="dashboardTable"></div>
+
+    <script>
+        function createDashboardTable() {
+            const data = [
+                { metric: 'Temperature', value: '72°F' },
+                { metric: 'Humidity', value: '45%' },
+                { metric: 'Energy Usage', value: '2.3 kWh' },
+                { metric: 'Security Status', value: 'Armed' }
+            ];
+
+            let tableHTML = '<table><tr><th>Metric</th><th>Value</th></tr>';
+            data.forEach(item => {
+                tableHTML += `<tr><td>${item.metric}</td><td>${item.value}</td></tr>`;
+            });
+            tableHTML += '</table>';
+
+            document.getElementById('dashboardTable').innerHTML = tableHTML;
+        }
+
+        createDashboardTable();
+    </script>
+</body>
+</html>

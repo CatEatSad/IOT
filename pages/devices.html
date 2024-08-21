@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devices</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Devices</h2>
+    <div id="devicesTable"></div>
+
+    <script>
+        let devices = [
+            { id: 1, name: 'Living Room Lights', status: 'On' },
+            { id: 2, name: 'Kitchen Appliances', status: 'Off' },
+            { id: 3, name: 'Garage Door', status: 'Closed' }
+        ];
+
+        function toggleDevice(id) {
+            const device = devices.find(d => d.id === id);
+            if (device) {
+                if (device.status === 'On' || device.status === 'Open') {
+                    device.status = device.name.includes('Door') ? 'Closed' : 'Off';
+                } else {
+                    device.status = device.name.includes('Door') ? 'Open' : 'On';
+                }
+                createDevicesTable();
+            }
+        }
+
+        function createDevicesTable() {
+            let tableHTML = '<table><tr><th>Device</th><th>Status</th><th>Action</th></tr>';
+            devices.forEach(item => {
+                const actionText = (item.status === 'On' || item.status === 'Open') ? 'Turn Off' : 'Turn On';
+                tableHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.status}</td>
+                        <td><button onclick="toggleDevice(${item.id})">${actionText}</button></td>
+                    </tr>`;
+            });
+            tableHTML += '</table>';
+
+            document.getElementById('devicesTable').innerHTML = tableHTML;
+        }
+
+        createDevicesTable();
+    </script>
+</body>
+</html>

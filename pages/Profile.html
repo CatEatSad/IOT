@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>User Profile</h2>
+    
+    <div class="avatar-container">
+        <img id="avatar" class="avatar" src="" alt="User Avatar">
+        <br>
+        <input type="file" id="avatar-upload" class="avatar-upload" accept="image/*">
+        <button onclick="document.getElementById('avatar-upload').click()" class="avatar-button">Change Avatar</button>
+    </div>
+
+    <div id="profileTable"></div>
+
+    <script>
+        function createProfileTable() {
+            const data = [
+                { field: 'Name', value: 'John Doe' },
+                { field: 'Email', value: 'john.doe@example.com' },
+                { field: 'Phone', value: '+1 (555) 123-4567' },
+                { field: 'Preferred Temperature', value: '72°F' }
+            ];
+
+            let tableHTML = '<table><tr><th>Field</th><th>Value</th></tr>';
+            data.forEach(item => {
+                tableHTML += `<tr><td>${item.field}</td><td>${item.value}</td></tr>`;
+            });
+            tableHTML += '</table>';
+
+            document.getElementById('profileTable').innerHTML = tableHTML;
+        }
+
+        function changeAvatar() {
+            const input = document.getElementById('avatar-upload');
+            const avatar = document.getElementById('avatar');
+
+            // Load the saved avatar from localStorage
+            const savedAvatar = localStorage.getItem('savedAvatar');
+            if (savedAvatar) {
+                avatar.src = savedAvatar;
+            } else {
+                avatar.src = 'https://via.placeholder.com/150';
+            }
+
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        avatar.src = event.target.result;
+                        localStorage.setItem('savedAvatar', event.target.result); // Save the avatar to localStorage
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        createProfileTable();
+        changeAvatar();
+    </script>
+</body>
+</html>

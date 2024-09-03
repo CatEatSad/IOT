@@ -4,31 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/Dashboard.css">
+</head>
 </head>
 <body>
-    <h2>Dashboard</h2>
-    <div id="dashboardTable"></div>
+    
 
-    <script>
-        function createDashboardTable() {
-            const data = [
-                { metric: 'Temperature', value: '72°F' },
-                { metric: 'Humidity', value: '45%' },
-                { metric: 'Energy Usage', value: '2.3 kWh' },
-                { metric: 'Security Status', value: 'Armed' }
-            ];
+    <div class="container">
+        <div class="Page">
+            <div class="logo">
+                <img src="../assets/Page-Icon/smart-home.png" alt="" class="logo-icon" >
+                <p class="logo-text">SMART HOUSE</p>
+            </div>
+            
+            <a href="dashboard.html" class="Dashboard-page">
+                <img src="../assets/Page-Icon/dashboard.svg" alt="Dashboard Icon" class="page-icon">
+                    <span class="page-text">Dashboard</span>
+            </a>
+            <a href="Device_History.html" class="Device_History-page">
+                <img src="../assets/Page-Icon/history.svg" alt="Device History Icon" class="page-icon">
+                <span class="page-text">Device_History</span>
+            </a>
+            <a href="Devices.html" class="Devices-page">
+                <img src="../assets/Page-Icon/devices.svg" alt="Devices Icon" class="page-icon">
+                <span class="page-text">Devices</span>
+            </a>
+            <a href="Profile.html" class="Profile-page">
+                <img src="../assets/Page-Icon/user.svg" alt="User Profile Icon" class="page-icon">
+                <span class="page-text">User Profile</span>
+            </a>
+        </div>
 
-            let tableHTML = '<table><tr><th>Metric</th><th>Value</th></tr>';
-            data.forEach(item => {
-                tableHTML += `<tr><td>${item.metric}</td><td>${item.value}</td></tr>`;
-            });
-            tableHTML += '</table>';
-
-            document.getElementById('dashboardTable').innerHTML = tableHTML;
-        }
-
-        createDashboardTable();
-    </script>
+        <main>
+            <div class="info-card">
+                <h2>Humidity</h2>
+                <p class="info-value">65%</p>
+            </div>
+            <div class="info-card">
+                <h2>Temperature</h2>
+                <p class="info-value">22°C</p>
+            </div>
+            <div class="info-card">
+                <h2>Light</h2>
+                <p class="info-value">450 lux</p>
+            </div>
+        </main>
+    </div>
 </body>
 </html>

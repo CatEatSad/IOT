@@ -1,0 +1,102 @@
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #ecf0f1;
+}
+
+.container {
+    display: flex;
+    flex-direction: row; 
+    min-height: 100vh;
+    
+}
+
+
+.logo-icon{
+
+    width: 100px; 
+    height: 100px; 
+    display: inline-block; 
+    vertical-align: middle;
+}
+.logo-text{
+    display: inline-block; 
+    margin-left: 10px; 
+    vertical-align: middle; 
+    font-size: 24px; 
+    font-weight: bold;
+}
+
+
+.Page {
+    width: 300px; 
+    background-color: #fff; 
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1); 
+    border-radius: 0 8px 8px 0; 
+    padding: 10px 0; 
+    position: relative;
+    overflow: hidden; 
+}
+
+.Dashboard-page, .Device_History-page, .Devices-page, .Profile-page {
+    display: flex; 
+    align-items: center;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+    background-size: 200% 100%; 
+    background-position: 0 0;
+    transition: background-position 0.5s ease, color 0.5s ease, transform 0.5s ease; 
+    font-size: 24px;
+    text-align: center;
+}
+
+.Dashboard-page {
+    margin-top: 200px;
+}
+
+.Device_History-page, .Devices-page, .Profile-page {
+   margin-top: 50px;
+}
+
+.Dashboard-page:hover, .Device_History-page:hover, .Devices-page:hover, .Profile-page:hover {
+    background-position: 100% 0; 
+    background-color: black;
+    color: white;
+    transform: translateX(10px); 
+}
+
+.Dashboard-page:hover .page-icon, 
+.Device_History-page:hover .page-icon, 
+.Devices-page:hover .page-icon, 
+.Profile-page:hover .page-icon {
+    filter: invert(100%); 
+}
+
+.page-icon {
+    width: 40px; 
+    height: 40px; 
+    margin-right: 20px;
+    transition: filter 0.5s ease; 
+}
+
+
+
+main {
+    flex: 1; 
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    margin-left: 20px; 
+}
+a {
+    text-decoration: none;
+}
+
+a:focus, a:active {
+    text-decoration: none;
+}
+
+a:visited {
+    color: inherit;
+}

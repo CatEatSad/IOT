@@ -1,0 +1,26 @@
+.info-card {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.info-card h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.info-card .info-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
+
+.info-card:hover {
+    background-color: #e0e0e0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}

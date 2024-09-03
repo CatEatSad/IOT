@@ -1,0 +1,78 @@
+.avatar-container {
+    margin-bottom: 20px;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    margin-right: 20px;
+}
+
+.avatar {
+    width: 250px;
+    height: 300px;
+    object-fit: cover;
+    border: 3px solid #3498db;
+}
+
+.avatar-upload {
+    display: none;
+}
+
+.avatar-button {
+    margin-top: 10px;
+}
+
+/* General Styles */
+
+.wrapper {
+    display: inline-block;
+    vertical-align: top;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    width: 1000px;
+    background: linear-gradient(135deg, white, white);
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+}
+
+.about-me-content h1 {
+    color: #01579b;
+    margin-bottom: 20px;
+}
+
+.about-me-content p {
+    color: #0277bd;
+    font-size: 1.2em;
+    line-height: 1.5;
+}
+.h2 {
+    color: #3498db;
+}
+
+
+
+.personal-data {
+    margin: 0;
+    font-size: 24px;
+}
+
+.personal-data p {
+    display: flex;
+    margin: 5px 0;
+}
+
+.label {
+    width: 70px; /* Độ rộng cố định cho các nhãn */
+    font-weight: bold;
+}
+
+.data{
+    margin-left: 20px;
+}
+
+.icon{
+    width: 50px;
+    height: 50px;
+    margin: 0;
+}

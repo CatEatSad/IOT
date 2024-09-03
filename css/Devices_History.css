@@ -1,0 +1,56 @@
+/* Cơ bản cho bảng */
+
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+.device-history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.device-history-table th, .device-history-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.device-history-table th {
+    background-color: #f4f4f4;
+}
+
+/* Kiểu cho trạng thái bật */
+.device-history-table td.on {
+    background-color: #4CAF50; /* Xanh lá cây */
+    color: white;
+}
+
+/* Kiểu cho trạng thái tắt */
+.device-history-table td.off {
+    background-color: #f44336; /* Đỏ */
+    color: white;
+}

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Device_History</title>
+    <title>Data Sensor</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/Devices_History.css">
+    <link rel="stylesheet" href="../css/Data_Sensor.css">
 </head>
 <body>
     <div class="container">
@@ -34,52 +34,55 @@
         </div>
         
         <main>
-            <div class="history-container">
-                <h2>Device History</h2>
+            <div class="sensor-data-container">
+                <h2>Sensor Data</h2>
                 <div class="search-container">
                     <input type="text" id="search" placeholder="">
                     <button>Search</button>
                 </div>
-                <table class="device-history-table">
+                <table class="sensor-data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Device Name</th>
-                            <th>Action Time</th>
-                            <th>Action</th>
+                            <th>Room Location</th>
+                            <th>Brightness</th>
+                            <th>Humidity</th>
+                            <th>Temperature</th>
+                            <th>Measurement Time</th>
                         </tr>
                     </thead>
-                    <tbody id="history-table-body">
+                    <tbody id="sensor-data-table-body">
                         <tr>
-                            <td>001</td>
-                            <td>Fan</td>
-                            <td>2024-09-03 14:23:45</td>
-                            <td class="on">On</td>
+                            <td>Living Room</td>
+                            <td>450 Lux</td>
+                            <td>55%</td>
+                            <td>22°C</td>
+                            <td>2024-09-03 08:15:30</td>
                         </tr>
                         <tr>
-                            <td>002</td>
-                            <td>Air Conditioner</td>
-                            <td>2024-09-03 15:10:30</td>
-                            <td class="off">Off</td>
+                            <td>Bedroom</td>
+                            <td>300 Lux</td>
+                            <td>60%</td>
+                            <td>20°C</td>
+                            <td>2024-09-03 09:45:00</td>
                         </tr>
                         <tr>
-                            <td>003</td>
-                            <td>Light</td>
-                            <td>2024-09-03 16:05:20</td>
-                            <td class="on">On</td>
+                            <td>Kitchen</td>
+                            <td>500 Lux</td>
+                            <td>50%</td>
+                            <td>24°C</td>
+                            <td>2024-09-03 10:30:45</td>
                         </tr>
                         <tr>
-                            <td>004</td>
-                            <td>Fan</td>
-                            <td>2024-09-03 17:45:15</td>
-                            <td class="off">Off</td>
+                            <td>Bathroom</td>
+                            <td>200 Lux</td>
+                            <td>70%</td>
+                            <td>23°C</td>
+                            <td>2024-09-03 11:00:15</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </main>
-        
     </div>
-
 </body>
 </html>

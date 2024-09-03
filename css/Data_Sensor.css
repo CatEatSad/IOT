@@ -1,0 +1,52 @@
+/* CSS cho bảng dữ liệu cảm biến */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+.sensor-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.sensor-data-table th, .sensor-data-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.sensor-data-table th {
+    background-color: #f4f4f4;
+}
+
+.sensor-data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.sensor-data-table tr:hover {
+    background-color: #f1f1f1;
+}

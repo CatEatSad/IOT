@@ -1,26 +1,171 @@
+.dashboard {
+    max-width: 1200px; /* Increased to allow more space */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-cards {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
 .info-card {
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
+    background-color: white;
     border-radius: 8px;
     padding: 20px;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.info-card h2 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.info-card .info-value {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 10px 0 0;
+    width: 30%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 20px;
 }
 
 .info-card:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #f0f0f0;
 }
+
+.info-card h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.info-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0088FE;
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.graph-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 80%; 
+}
+
+.side-panel {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 18%; 
+    margin-left: 2%; 
+    border-style: solid;
+}
+
+/* Control Button Styles */
+.control-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+
+.device-icon {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.5s linear;
+}
+
+
+/* Common Icon Wrapper Styles */
+.icon-wrapper {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.5s ease-in-out,
+    box-shadow 0.5 ease-in-out;
+    border-radius: 50%; /* Optional: For rounded corners */
+}
+
+/* Background color for the fan icon when on */
+.fan-icon-wrapper.active {
+    background-color: rgba(144, 238, 144, 0.4); /* Light green color */
+    box-shadow: 0 0 15px rgba(144, 238, 144, 0.7); 
+}
+
+/* Background color for the air conditioner when on */
+.ac-icon-wrapper.active {
+    background-color: rgba(70, 130, 180, 0.4); /* Light steel blue color */
+    box-shadow: 0 0 15px rgba(70, 130, 180, 0.7); 
+}
+
+/* Background color for the lightbulb when on */
+.light-icon-wrapper.active {
+    background-color: rgba(255, 255, 0, 0.7); /* Light yellow color */
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); 
+}
+
+
+/* Add rotation animation for fan icon */
+.fan-icon.rotate {
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+

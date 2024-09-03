@@ -37,7 +37,7 @@ body {
     overflow: hidden; 
 }
 
-.Dashboard-page, .Device_History-page, .Devices-page, .Profile-page {
+.Dashboard-page, .Device_History-page, .Data_Sensor-page, .Profile-page {
     display: flex; 
     align-items: center;
     padding: 10px;
@@ -54,11 +54,11 @@ body {
     margin-top: 200px;
 }
 
-.Device_History-page, .Devices-page, .Profile-page {
+.Device_History-page, .Data_Sensor-page, .Profile-page {
    margin-top: 50px;
 }
 
-.Dashboard-page:hover, .Device_History-page:hover, .Devices-page:hover, .Profile-page:hover {
+.Dashboard-page:hover, .Device_History-page:hover, .Data_Sensor-page:hover, .Profile-page:hover {
     background-position: 100% 0; 
     background-color: black;
     color: white;
@@ -67,7 +67,7 @@ body {
 
 .Dashboard-page:hover .page-icon, 
 .Device_History-page:hover .page-icon, 
-.Devices-page:hover .page-icon, 
+.Data_Sensor-page:hover .page-icon, 
 .Profile-page:hover .page-icon {
     filter: invert(100%); 
 }

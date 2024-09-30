@@ -1,32 +1,67 @@
-/* CSS cho bảng dữ liệu cảm biến */
+/* Search Container */
 .search-container {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-}
-
-.search-container input {
-    flex: 1;
     padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ccc; /* Add border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background */
 }
 
-.search-container button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: 1px solid #007bff;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
-    margin-left: 10px;
-    cursor: pointer;
+/* Search Criteria Dropdown */
+#search-criteria {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc; /* Border for dropdown */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
 }
 
-.search-container button:hover {
-    background-color: #0056b3;
+/* Search Input Field */
+#search-input {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc; /* Border for input */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    width: 200px; /* Fixed width */
 }
+
+/* Date Range Container */
+#date-range-container {
+    display: flex;
+    align-items: center;
+    margin-right: 10px; /* Space between elements */
+}
+
+#start-date,
+#end-date {
+    padding: 10px;
+    margin-left: 5px;
+    border: 1px solid #ccc; /* Border for date inputs */
+    border-radius: 5px; /* Rounded corners */
+}
+
+/* Search Button */
+#search-btn {
+    padding: 10px 15px; /* Top-bottom and left-right padding */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #28a745; /* Green background */
+    color: white; /* White text */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Transition effect */
+}
+
+#search-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+
+
+
 .sensor-data-table {
     width: 100%;
     border-collapse: collapse;
@@ -49,4 +84,45 @@
 
 .sensor-data-table tr:hover {
     background-color: #f1f1f1;
+}
+
+
+
+.controls-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+
+
+
+/* Pagination buttons container */
+#pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#pagination-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pagination-container button:hover {
+    background-color: #0056b3;
+}
+
+#pagination-container span {
+    margin: 0 15px;
+    line-height: 32px;
+    font-size: 16px;
+    font-weight: bold;
 }

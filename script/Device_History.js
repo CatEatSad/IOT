@@ -1,4 +1,3 @@
-// Simulated data (replace this with actual data later)
 const deviceHistory = [
     { id: '001', name: 'Fan', time: '2024-09-03 14:23:45', action: 'On' },
     { id: '002', name: 'Air Conditioner', time: '2024-09-03 15:10:30', action: 'Off' },
@@ -16,18 +15,18 @@ const deviceHistory = [
     // Additional data can go here...
 ];
 
-// Pagination settings
+
+let filteredHistory = [...deviceHistory];  // This will hold the filtered data
 let rowsPerPage = 10;  // Default rows per page
 let currentPage = 1;
 
-// Function to display data in the table
 function displayTableData(page) {
     const startIndex = (page - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    const paginatedData = deviceHistory.slice(startIndex, endIndex);
+    const paginatedData = filteredHistory.slice(startIndex, endIndex);
 
     const tableBody = document.getElementById('history-table-body');
-    tableBody.innerHTML = ''; // Clear previous data
+    tableBody.innerHTML = '';  // Clear previous data
 
     paginatedData.forEach(device => {
         const row = `
@@ -41,10 +40,37 @@ function displayTableData(page) {
         tableBody.innerHTML += row;
     });
 
-    document.getElementById('page-info').textContent = `Page ${currentPage} of ${Math.ceil(deviceHistory.length / rowsPerPage)}`;
+    document.getElementById('page-info').textContent = `Page ${currentPage} of ${Math.ceil(filteredHistory.length / rowsPerPage)}`;
 }
 
-// Function to go to the previous page
+function filterHistoryByDateRange() {
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+
+    if (startDate && endDate) {
+        const startTimestamp = new Date(startDate).getTime();
+        const endTimestamp = new Date(endDate).getTime();
+
+        // Check if the start date is after the end date
+        if (startTimestamp > endTimestamp) {
+            alert("Invalid date range! The start date cannot be after the end date.");
+            return; // Exit the function without applying the filter
+        }
+
+        // Proceed with filtering
+        filteredHistory = deviceHistory.filter(device => {
+            const deviceTime = new Date(device.time).getTime();
+            return deviceTime >= startTimestamp && deviceTime <= endTimestamp;
+        });
+    } else {
+        filteredHistory = [...deviceHistory];  // Reset to full data if no range is selected
+    }
+
+    currentPage = 1;  // Reset to first page
+    displayTableData(currentPage);
+}
+
+
 document.getElementById('prev-btn').addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage--;
@@ -52,20 +78,20 @@ document.getElementById('prev-btn').addEventListener('click', () => {
     }
 });
 
-// Function to go to the next page
 document.getElementById('next-btn').addEventListener('click', () => {
-    if (currentPage * rowsPerPage < deviceHistory.length) {
+    if (currentPage * rowsPerPage < filteredHistory.length) {
         currentPage++;
         displayTableData(currentPage);
     }
 });
 
-// Handle rows per page change
 document.getElementById('rows-per-page').addEventListener('change', (event) => {
-    rowsPerPage = parseInt(event.target.value);  // Update rows per page
-    currentPage = 1;  // Reset to the first page
+    rowsPerPage = parseInt(event.target.value);
+    currentPage = 1;
     displayTableData(currentPage);
 });
+
+document.getElementById('filter-btn').addEventListener('click', filterHistoryByDateRange);
 
 // Initial load
 displayTableData(currentPage);

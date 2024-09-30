@@ -11,13 +11,13 @@
     <div class="container">
         <div class="Page">
             <div class="logo">
-                <img src="../assets/Page-Icon/smart-home.png" alt="" class="logo-icon" >
+                <img src="../assets/Page-Icon/smart-home.png" alt="" class="logo-icon">
                 <p class="logo-text">SMART HOUSE</p>
             </div>
             
-            <a href="dashboard.html" class="Dashboard-page">
+            <a href="Dashboard.html" class="Dashboard-page">
                 <img src="../assets/Page-Icon/dashboard.svg" alt="Dashboard Icon" class="page-icon">
-                    <span class="page-text">Dashboard</span>
+                <span class="page-text">Dashboard</span>
             </a>
             <a href="Device_History.html" class="Device_History-page">
                 <img src="../assets/Page-Icon/history.svg" alt="Device History Icon" class="page-icon">
@@ -36,14 +36,34 @@
         <main>
             <div class="sensor-data-container">
                 <h2>Sensor Data</h2>
+
+                <!-- Search Criteria -->
                 <div class="search-container">
-                    <input type="text" id="search" placeholder="">
-                    <button>Search</button>
+                    <select id="search-criteria">
+                        <option value="brightness">Brightness</option>
+                        <option value="humidity">Humidity</option>
+                        <option value="temperature">Temperature</option>
+                        <option value="date">Date Range</option>
+                    </select>
+
+                    <!-- Search Input -->
+                    <input type="text" id="search-input" placeholder="Search...">
+
+                    <!-- Date Range Input -->
+                    <div id="date-range-container" style="display: none;">
+                        <label for="start-date">From:</label>
+                        <input type="date" id="start-date">
+                        <label for="end-date">To:</label>
+                        <input type="date" id="end-date">
+                    </div>
+
+                    <button id="search-btn">Search</button>
                 </div>
+
+                <!-- Sensor Data Table -->
                 <table class="sensor-data-table">
                     <thead>
                         <tr>
-                            <th>Room Location</th>
                             <th>Brightness</th>
                             <th>Humidity</th>
                             <th>Temperature</th>
@@ -51,38 +71,31 @@
                         </tr>
                     </thead>
                     <tbody id="sensor-data-table-body">
-                        <tr>
-                            <td>Living Room</td>
-                            <td>450 Lux</td>
-                            <td>55%</td>
-                            <td>22°C</td>
-                            <td>2024-09-03 08:15:30</td>
-                        </tr>
-                        <tr>
-                            <td>Bedroom</td>
-                            <td>300 Lux</td>
-                            <td>60%</td>
-                            <td>20°C</td>
-                            <td>2024-09-03 09:45:00</td>
-                        </tr>
-                        <tr>
-                            <td>Kitchen</td>
-                            <td>500 Lux</td>
-                            <td>50%</td>
-                            <td>24°C</td>
-                            <td>2024-09-03 10:30:45</td>
-                        </tr>
-                        <tr>
-                            <td>Bathroom</td>
-                            <td>200 Lux</td>
-                            <td>70%</td>
-                            <td>23°C</td>
-                            <td>2024-09-03 11:00:15</td>
-                        </tr>
+                        <!-- Rows will be populated by JavaScript -->
                     </tbody>
                 </table>
+            
+                <!-- Pagination Controls -->
+                <div class="controls-container">
+                    <div class="rows-per-page-container">
+                        <label for="rows-per-page">Rows per page:</label>
+                        <select id="rows-per-page">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                    <div id="pagination-container">
+                        <button id="prev-btn">Previous</button>
+                        <span id="page-info"></span>
+                        <button id="next-btn">Next</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
+
+    <script src="../script/Data_Sensor.js"></script>
 </body>
 </html>

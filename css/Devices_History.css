@@ -1,56 +1,129 @@
-/* Cơ bản cho bảng */
-
-.search-container {
+/* Styling for Date Range Filter */
+.date-filter-container {
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 10px;
     margin-bottom: 20px;
+    background-color: #f9f9f9; /* Light background for contrast */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.search-container input {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
+.date-filter-container label {
+    font-weight: bold;
+    color: #333;
+}
+
+.date-filter-container input[type="date"] {
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    background-color: #fff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
 }
 
-.search-container button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: 1px solid #007bff;
-    background-color: #007bff;
+.date-filter-container button {
+    padding: 8px 15px;
+    background-color: #007bff; /* Blue button */
     color: white;
+    border: none;
     border-radius: 4px;
-    margin-left: 10px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.search-container button:hover {
-    background-color: #0056b3;
+.date-filter-container button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }
+
+
+/* Basic table styling */
 .device-history-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    overflow: hidden; /* Ensure rounded borders are visible */
 }
 
 .device-history-table th, .device-history-table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: center;
+    transition: background-color 0.3s ease;
 }
 
+/* Header row styling */
 .device-history-table th {
     background-color: #f4f4f4;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
 }
 
-/* Kiểu cho trạng thái bật */
+/* Row hover effect */
+.device-history-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* On state styling */
 .device-history-table td.on {
-    background-color: #4CAF50; /* Xanh lá cây */
+    background-color: #4CAF50; /* Green */
     color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-/* Kiểu cho trạng thái tắt */
+/* Off state styling */
 .device-history-table td.off {
-    background-color: #f44336; /* Đỏ */
+    background-color: #f44336; /* Red */
     color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+
+
+.controls-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+
+
+
+/* Pagination buttons container */
+#pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#pagination-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pagination-container button:hover {
+    background-color: #0056b3;
+}
+
+#pagination-container span {
+    margin: 0 15px;
+    line-height: 32px;
+    font-size: 16px;
+    font-weight: bold;
 }

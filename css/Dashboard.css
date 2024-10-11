@@ -121,37 +121,6 @@ input:checked + .slider:before {
 }
 
 
-/* Common Icon Wrapper Styles */
-.icon-wrapper {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.5s ease-in-out,
-    box-shadow 0.5 ease-in-out;
-    border-radius: 50%; /* Optional: For rounded corners */
-}
-
-/* Background color for the fan icon when on */
-.fan-icon-wrapper.active {
-    background-color: rgba(144, 238, 144, 0.4); /* Light green color */
-    box-shadow: 0 0 15px rgba(144, 238, 144, 0.7); 
-}
-
-/* Background color for the air conditioner when on */
-.ac-icon-wrapper.active {
-    background-color: rgba(70, 130, 180, 0.4); /* Light steel blue color */
-    box-shadow: 0 0 15px rgba(70, 130, 180, 0.7); 
-}
-
-/* Background color for the lightbulb when on */
-.light-icon-wrapper.active {
-    background-color: rgba(255, 255, 0, 0.7); /* Light yellow color */
-    box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); 
-}
-
 
 /* Add rotation animation for fan icon */
 .fan-icon.rotate {

@@ -1,3 +1,10 @@
+const ws = new WebSocket('ws://localhost:8080');
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Received data:', data);
+    updateData(data);
+};
+
 const initialData = {
     labels: Array.from({ length: 20 }, (_, i) => {
         const date = new Date();
@@ -12,6 +19,7 @@ const initialData = {
         })),
     }
 };
+
 
 // Create chart
 const ctx = document.getElementById('chart').getContext('2d');
@@ -57,15 +65,15 @@ const chart = new Chart(ctx, {
 });
 
 // Function to update the chart and the display values
-const updateData = () => {
+const updateData = (data) => {
     const currentTime = new Date().toLocaleTimeString();
     initialData.labels.push(currentTime);
     initialData.labels.shift();
 
-    // Generate new data
-    const newTemperature = Math.max(25, Math.min(40, initialData.dataset.data[initialData.dataset.data.length - 1].temperature + Math.random() * 2 - 1));
-    const newHumidity = Math.max(0, Math.min(100, initialData.dataset.data[initialData.dataset.data.length - 1].humidity + Math.random() * 4 - 2));
-    const newLight = Math.max(0, Math.min(100, initialData.dataset.data[initialData.dataset.data.length - 1].light + Math.random() * 10 - 5)); // light stays in range 0-100
+    // Use received data
+    const newTemperature = data.temperature;
+    const newHumidity = data.humidity;
+    const newLight = data.lux;
 
     // Add new data
     initialData.dataset.data.push({ temperature: newTemperature, humidity: newHumidity, light: newLight });
@@ -75,18 +83,15 @@ const updateData = () => {
     chart.data.labels = initialData.labels;
     chart.data.datasets[0].data = initialData.dataset.data.map(d => d.temperature);
     chart.data.datasets[1].data = initialData.dataset.data.map(d => d.humidity);
-    chart.data.datasets[2].data = initialData.dataset.data.map(d => d.light);
+    chart.data.datasets[2].data = initialData.dataset.data.map(d => d.light/10);
 
     chart.update();
 
     // Update display values
     document.getElementById('temperature-value').textContent = newTemperature.toFixed(1) + '°C';
     document.getElementById('humidity-value').textContent = newHumidity.toFixed(1) + '%';
-    document.getElementById('light-value').textContent = (newLight * 10).toFixed(1) + ' lux'; // Display light value multiplied by 10
+    document.getElementById('light-value').textContent = (newLight).toFixed(1) + ' lux'; // Display light value multiplied by 10
 };
-
-// Update every second
-setInterval(updateData, 1000);
 
 // Function to update the icon's state
 function updateIconState(id, isOn) {
@@ -113,13 +118,40 @@ function updateIconState(id, isOn) {
     }
 }
 
+function postSwitchState(deviceName, deviceId, state) {
+    const payload = {
+        deviceName: deviceName,
+        deviceId: deviceId,
+        timestamp: new Date().toISOString(),
+        state: state
+    };
+
+    fetch('http://localhost:3000/api/switch-state', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Success:', data))
+    .catch(error => console.error('Error:', error));
+}
+
 // Function to save switch state to localStorage
 function saveSwitchState(event) {
     const switchElement = event.target;
-    localStorage.setItem(switchElement.id, switchElement.checked);
+    const deviceName = switchElement.getAttribute('data-device-name');
+    const deviceId = switchElement.id;
+    const state = switchElement.checked;
+
+    localStorage.setItem(deviceId, state);
 
     // Update the icon state when the switch is toggled
-    updateIconState(switchElement.id, switchElement.checked);
+    updateIconState(deviceId, state);
+
+    // Post the switch state
+    postSwitchState(deviceName, deviceId, state);
 }
 
 // Load switch state from localStorage

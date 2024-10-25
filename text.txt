@@ -1,0 +1,121 @@
+document.getElementById('search-criteria').addEventListener('change', (event) => {
+    const searchInput = document.getElementById('search-input');
+    const dateRangeContainer = document.getElementById('date-range-container');
+    
+    if (event.target.value === 'date') {
+        searchInput.style.display = 'none';
+        dateRangeContainer.style.display = 'flex';
+    } else {
+        searchInput.style.display = 'block';
+        dateRangeContainer.style.display = 'none';
+    }
+});
+
+document.getElementById('search-btn').addEventListener('click', () => {
+    const criteria = document.getElementById('search-criteria').value;
+    let filteredData;
+
+    if (criteria === 'date') {
+        const startDate = new Date(document.getElementById('start-date').value);
+        const endDate = new Date(document.getElementById('end-date').value);
+        
+        if (startDate > endDate || isNaN(startDate) || isNaN(endDate)) {
+            alert('Please enter a valid date range.');
+            return;
+        }
+
+        filteredData = sensorData.filter(sensor => {
+            const sensorTime = new Date(sensor.time);
+            return sensorTime >= startDate && sensorTime <= endDate;
+        });
+    } else {
+        const searchValue = document.getElementById('search-input').value.trim().toLowerCase();
+        
+        filteredData = sensorData.filter(sensor => {
+            const value = sensor[criteria].toLowerCase();
+            return value.includes(searchValue);
+        });
+    }
+
+    displayTableData(1, filteredData);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let sensorData = []; // Initialize sensorData
+
+let rowsPerPage = 10;  // Default rows per page
+let currentPage = 1;   // Default current page
+
+// Function to fetch data from the backend and update sensorData
+async function fetchSensorData(page, rowsPerPage) {
+    try {
+        const response = await fetch('http://localhost:3000/api/sensor-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ currentPage: page, rowsPerPage }),
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        console.log('Data received from server:', data); // Print received data to console
+        sensorData = data; // Update sensorData with the received data
+        console.log('sensorData:', sensorData); // Print sensorData to terminal
+        displayTableData(page, sensorData); // Display the received data
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Function to display sensor data in the table
+function displayTableData(page, data) {
+    const tableBody = document.getElementById('sensor-data-table-body');
+    tableBody.innerHTML = '';  // Clear previous data
+
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        // Assuming item has properties 'humidity', 'temperature', 'lux', 'datetime'
+        row.innerHTML = `
+            <td>${item.humidity}</td>
+            <td>${item.temperature}</td>
+            <td>${item.lux}</td>
+            <td>${item.datetime}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Fetch data when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    fetchSensorData(currentPage, rowsPerPage);
+});

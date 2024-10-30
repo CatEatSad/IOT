@@ -1,54 +1,13 @@
 const mqtt = require('mqtt');
-const fs = require('fs');
 const WebSocket = require('ws');
 const mysql = require('mysql2');
 const moment = require('moment');
 
-const brokerUrl = 'mqtt://192.168.201.151:1883';
-
-const ws = new WebSocket.Server({ port: 8080 });
-
+const brokerUrl = 'mqtt://192.168.0.108:1883';
 const options = {
     username: 'admin',
     password: 'admin'
 };
-
-
-const topic = 'esp32/sensor_data';
-
-const client = mqtt.connect(brokerUrl, options);
-
-ws.on('connection', (ws) => {
-    console.log('WebSocket connection established');
-
-    client.on('message', (topic, message) => {
-        console.log(`Received message from ${topic}: ${message.toString()}`);
-
-        // Parse the message as JSON
-        let data;
-        try {
-            data = JSON.parse(message.toString());
-        } catch (e) {
-            console.error('Failed to parse message as JSON:', e);
-            return;
-        }
-
-        // Send data to WebSocket clients
-        ws.send(JSON.stringify(data));
-    });
-});
-
-client.on('connect', () => {
-    console.log('Connected to MQTT broker');
-    // Subscribe to the topic
-    client.subscribe(topic, (err) => {
-        if (err) {
-            console.error('Failed to subscribe to topic:', err);
-        } else {
-            console.log('Subscribed to topic:', topic);
-        }
-    });
-});
 
 
 const db = mysql.createConnection({
@@ -67,30 +26,80 @@ db.connect((err) => {
     console.log('Connected to MySQL database');
 });
 
+// Tạo hai WebSocket server riêng biệt cho hai loại dữ liệu
+const wsSensor = new WebSocket.Server({ port: 8080 }); // cho sensor data
+const wsDevice = new WebSocket.Server({ port: 8081 }); // cho device status
 
-client.on('message', (topic, message) => {
-    console.log(`Received message from ${topic}: ${message.toString()}`);
+const client = mqtt.connect(brokerUrl, options);
 
-    // Parse the message as JSON
-    let data;
-    try {
-        data = JSON.parse(message.toString());
-    } catch (e) {
-        console.error('Failed to parse message as JSON:', e);
-        return;
-    }
-
-    // Add datetime field to the data
-    data.datetime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-
-    // Insert data into the database
-    const query = 'INSERT INTO esp32_data SET ?';
-    db.query(query, data, (err, result) => {
-        if (err) {
-            console.error('Failed to insert data into database:', err);
-            return;
+// Xử lý kết nối WebSocket cho sensor data
+wsSensor.on('connection', (ws) => {
+    console.log('Sensor WebSocket connected');
+    
+    client.on('message', (topic, message) => {
+        if (topic === 'esp32/sensor_data') {
+            try {
+                const data = JSON.parse(message.toString());
+                // Gửi sensor data tới client
+                ws.send(JSON.stringify(data));
+                
+                // Lưu vào database
+                data.datetime = moment().format('YYYY-MM-DD HH:mm:ss');
+                const query = 'INSERT INTO esp32_data SET ?';
+                db.query(query, data, (err, result) => {
+                    if (err) {
+                        console.error('Failed to insert data:', err);
+                    }
+                });
+            } catch (e) {
+                console.error('Failed to parse sensor data:', e);
+            }
         }
-        console.log('Data inserted into database:', result.insertId);
     });
 });
+
+// Xử lý kết nối WebSocket cho device status
+wsDevice.on('connection', (ws) => {
+    console.log('Device WebSocket connected');
+    
+    client.on('message', (topic, message) => {
+        if (topic === 'esp32/devices_control/confirmed') {
+            try {
+                const rawData = JSON.parse(message.toString());
+                // Chuyển đổi format data
+                const deviceInfo = Object.entries(rawData)[0];
+                if (deviceInfo[0].toLowerCase()=="air conditioner"){
+                    deviceInfo[0] = "ac";
+                }
+                const data = {
+                    deviceId: `${deviceInfo[0].toLowerCase()}-switch`,
+                    state: deviceInfo[1] === 'ON'
+                };
+                
+                // Gửi device status tới client
+                ws.send(JSON.stringify(data));
+            } catch (e) {
+                console.error('Failed to parse device data:', e);
+            }
+        }
+    });
+});
+
+// MQTT connection handler
+client.on('connect', () => {
+    console.log('Connected to MQTT broker');
+    
+    // Subscribe to both topics
+    client.subscribe(['esp32/sensor_data', 'esp32/devices_control/confirmed'], (err) => {
+        if (err) {
+            console.error('Failed to subscribe:', err);
+        } else {
+            console.log('Subscribed to topics');
+        }
+    });
+});
+
+
+
+
+

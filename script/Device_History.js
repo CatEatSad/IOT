@@ -15,6 +15,13 @@ function formatDateTime(dateTime) {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
+function objectToQueryString(obj) {
+    return Object.keys(obj)
+        .filter(key => obj[key] !== undefined && obj[key] !== '')
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+        .join('&');
+}
+
 
 const formatDeviceId = (id) => {
     // Ensure the ID is padded with leading zeros to 2 digits
@@ -30,20 +37,18 @@ async function displayTableData(page) {
         // Prepare search parameters
         const searchParams = {
             currentPage: page,
-            rowsPerPage: rowsPerPage,
+            rowsPerPage: rowsPerPage
         };
 
-        // Add appropriate search values based on criteria
+        // Add date parameters if they exist
         if (startDate.value) searchParams.startDate = startDate.value;
         if (endDate.value) searchParams.endDate = endDate.value;
-        
 
-        // Fetch data
-        const response = await fetch('http://localhost:3000/api/search-switch-state', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(searchParams)
-        });
+        // Convert parameters to query string
+        const queryString = objectToQueryString(searchParams);
+
+        // Fetch data using GET
+        const response = await fetch(`http://localhost:3000/api/search-switch-state?${queryString}`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -57,19 +62,19 @@ async function displayTableData(page) {
 
         // Update table
         const tableBody = document.getElementById('history-table-body');
-tableBody.innerHTML = '';
+        tableBody.innerHTML = '';
 
-result.data.forEach(device => {
-    const row = `
-        <tr>
-            <td>${formatDeviceId(device.id)}</td>
-            <td>${device.device_name}</td>
-            <td>${formatDateTime(device.timestamp)}</td>
-            <td class="${device.state.toLowerCase()}">${device.state}</td>
-        </tr>
-    `;
-    tableBody.innerHTML += row;
-})
+        result.data.forEach(device => {
+            const row = `
+                <tr>
+                    <td>${formatDeviceId(device.id)}</td>
+                    <td>${device.device_name}</td>
+                    <td>${formatDateTime(device.timestamp)}</td>
+                    <td class="${device.state.toLowerCase()}">${device.state}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
 
         // Update pagination info
         const { pagination } = result;
@@ -85,7 +90,6 @@ result.data.forEach(device => {
         // You might want to add error handling UI here
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
     // Search criteria change handler

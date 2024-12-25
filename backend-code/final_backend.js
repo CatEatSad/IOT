@@ -27,8 +27,7 @@ db.connect((err) => {
 });
 
 // Tạo hai WebSocket server riêng biệt cho hai loại dữ liệu
-const wsSensor = new WebSocket.Server({ port: 8080 }); // cho sensor data
-const wsDevice = new WebSocket.Server({ port: 8081 }); // cho device status
+const wsSensor = new WebSocket.Server({ port: 8082 }); // cho sensor data
 
 const client = mqtt.connect(brokerUrl, options);
 
@@ -44,11 +43,9 @@ wsSensor.on('connection', (ws) => {
                 // Gửi sensor data tới client
                 ws.send(JSON.stringify(data));
                 
-                delete data.windspeed;
-
                 // Lưu vào database
                 data.datetime = moment().format('YYYY-MM-DD HH:mm:ss');
-                const query = 'INSERT INTO esp32_data SET ?';
+                const query = 'INSERT INTO Bai_5 SET ?';
                 db.query(query, data, (err, result) => {
                     if (err) {
                         console.error('Failed to insert data:', err);
@@ -61,39 +58,14 @@ wsSensor.on('connection', (ws) => {
     });
 });
 
-// Xử lý kết nối WebSocket cho device status
-wsDevice.on('connection', (ws) => {
-    console.log('Device WebSocket connected');
-    
-    client.on('message', (topic, message) => {
-        if (topic === 'esp32/devices_control/confirmed') {
-            try {
-                const rawData = JSON.parse(message.toString());
-                // Chuyển đổi format data
-                const deviceInfo = Object.entries(rawData)[0];
-                if (deviceInfo[0].toLowerCase()=="air conditioner"){
-                    deviceInfo[0] = "ac";
-                }
-                const data = {
-                    deviceId: `${deviceInfo[0].toLowerCase()}-switch`,
-                    state: deviceInfo[1] === 'ON'
-                };
-                
-                // Gửi device status tới client
-                ws.send(JSON.stringify(data));
-            } catch (e) {
-                console.error('Failed to parse device data:', e);
-            }
-        }
-    });
-});
+
 
 // MQTT connection handler
 client.on('connect', () => {
     console.log('Connected to MQTT broker');
     
     // Subscribe to both topics
-    client.subscribe(['esp32/sensor_data', 'esp32/devices_control/confirmed'], (err) => {
+    client.subscribe(['esp32/sensor_data'], (err) => {
         if (err) {
             console.error('Failed to subscribe:', err);
         } else {

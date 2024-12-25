@@ -16,6 +16,13 @@ function formatDateTime(dateTime) {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
+function objectToQueryString(obj) {
+    return Object.keys(obj)
+        .filter(key => obj[key] !== undefined && obj[key] !== '')
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+        .join('&');
+}
+
 // Main function to fetch and display data
 async function displayTableData(page) {
     try {
@@ -39,12 +46,11 @@ async function displayTableData(page) {
             searchParams.searchValue = searchInput.value.trim();
         }
 
-        // Fetch data
-        const response = await fetch('http://localhost:3000/api/search-sensor-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(searchParams)
-        });
+        // Convert parameters to query string
+        const queryString = objectToQueryString(searchParams);
+
+        // Fetch data using GET
+        const response = await fetch(`http://localhost:3000/api/search-sensor-data?${queryString}`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -86,6 +92,7 @@ async function displayTableData(page) {
         // You might want to add error handling UI here
     }
 }
+
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {

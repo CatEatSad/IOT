@@ -5,7 +5,7 @@ const pendingStateChanges = new Map();
 
 // State management object
 const dashboardState = {
-    currentView: 'all', // 'all', 'temperature', 'humidity', 'light'
+    currentView: 'all', // 'all', 'temperature', 'humidity', 'light', 'dust'
     chartData: {
         labels: [],
         datasets: []
@@ -13,11 +13,11 @@ const dashboardState = {
     lastValues: {
         temperature: 25.0,
         humidity: 65.0,
-        light: 450.0
+        light: 450.0,
     }
 };
 
-// Initialize data
+// Initialize data - updated to include dust
 const initialData = {
     labels: Array.from({ length: 20 }, (_, i) => {
         const date = new Date();
@@ -28,10 +28,13 @@ const initialData = {
         data: Array.from({ length: 20 }, () => ({
             temperature: 25 + Math.random() * 15,
             humidity: 65 + Math.random() * 10 - 5,
-            light: Math.random() * 100
+            light: Math.random() * 100,
         })),
     }
 };
+
+
+// Initialize data
 
 // Create chart with proper error handling
 let chart;
@@ -61,7 +64,7 @@ try {
                     hidden: false
                 },
                 {
-                    label: 'Light (0-100)',
+                    label: 'Light (0-200)',
                     data: initialData.dataset.data.map(d => d.light),
                     borderColor: '#00C49F',
                     tension: 0.4,
@@ -74,7 +77,7 @@ try {
             scales: {
                 y: {
                     beginAtZero: false,
-                    max: 100
+                    max: 200
                 },
                 x: {
                     ticks: {
@@ -87,6 +90,7 @@ try {
 } catch (error) {
     console.error('Error initializing chart:', error);
 }
+
 
 // Background image functions
 const getTemperatureBackground = (value) => {
@@ -116,7 +120,7 @@ const updateCardBackgrounds = (temperature, humidity, light) => {
         const elements = {
             temperature: document.getElementById('temperature-card'),
             humidity: document.getElementById('humidity-card'),
-            light: document.getElementById('light-card')
+            light: document.getElementById('light-card'),
         };
 
         // Verify all elements exist
@@ -195,18 +199,8 @@ function loadDashboardState() {
 
 // Show chart with proper validation
 function showChart(view) {
-    if (!chart) {
-        console.warn('Chart object not initialized');
-        return;
-    }
-
-    if (!chart.data) {
-        console.warn('Chart data not initialized');
-        return;
-    }
-
-    if (!chart.data.datasets) {
-        console.warn('Chart datasets not initialized');
+    if (!chart || !chart.data || !chart.data.datasets) {
+        console.warn('Chart not properly initialized');
         return;
     }
 
@@ -215,24 +209,21 @@ function showChart(view) {
 
     switch (view) {
         case 'temperature':
+            datasets.forEach(dataset => dataset.hidden = true);
             datasets[0].hidden = false;
-            datasets[1].hidden = true;
-            datasets[2].hidden = true;
             break;
         case 'humidity':
-            datasets[0].hidden = true;
+            datasets.forEach(dataset => dataset.hidden = true);
             datasets[1].hidden = false;
-            datasets[2].hidden = true;
             break;
         case 'light':
-            datasets[0].hidden = true;
-            datasets[1].hidden = true;
+            datasets.forEach(dataset => dataset.hidden = true);
             datasets[2].hidden = false;
             break;
+        case 'all':
         default:
-            datasets[0].hidden = false;
-            datasets[1].hidden = false;
-            datasets[2].hidden = false;
+            // Hiển thị tất cả datasets thay vì ẩn chúng
+            datasets.forEach(dataset => dataset.hidden = false);
             break;
     }
 
@@ -248,7 +239,7 @@ function updateInfoValues(values) {
         const elements = {
             temperature: document.getElementById('temperature-value'),
             humidity: document.getElementById('humidity-value'),
-            light: document.getElementById('light-value')
+            light: document.getElementById('light-value'),
         };
 
         // Verify all elements exist
@@ -262,6 +253,7 @@ function updateInfoValues(values) {
         elements.temperature.textContent = `${values.temperature.toFixed(1)}°C`;
         elements.humidity.textContent = `${values.humidity.toFixed(1)}%`;
         elements.light.textContent = `${values.light.toFixed(1)} lux`;
+        
 
         // Update backgrounds
         updateCardBackgrounds(values.temperature, values.humidity, values.light);
@@ -288,7 +280,7 @@ const updateData = (data) => {
         const newData = {
             temperature: data.temperature,
             humidity: data.humidity,
-            light: data.lux
+            light: data.lux,
         };
         
         initialData.dataset.data = [...initialData.dataset.data.slice(1), newData];
@@ -490,9 +482,6 @@ function saveSwitchState(event) {
     }
 }
 
-// Thêm CSS cho hiệu ứng quay
-
-
 
 // Thêm hàm để xử lý animation khi click switch
 function handleSwitchAnimation(event) {
@@ -542,7 +531,7 @@ function handleSwitchAnimation(event) {
             // Show error message
             alert('Device did not respond. Please try again.');
         }
-    }, 10000);
+    }, 100000);
 }
 
 
@@ -554,6 +543,7 @@ function postSwitchState(deviceName, deviceId, state) {
         timestamp: new Date().toISOString(),
         state: state
     };
+
 
     console.log('Sending switch state:', payload);
 

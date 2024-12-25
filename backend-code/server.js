@@ -11,7 +11,6 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-const topic_device = 'esp32/devices_control/confirmed';
 
 // MySQL connection setup với handling reconnect
 let connection = mysql.createConnection({
@@ -52,7 +51,7 @@ function handleDisconnect() {
 handleDisconnect();
 
 // MQTT Setup with error handling
-const brokerUrl = 'mqtt://192.168.0.108:1883';
+const brokerUrl = 'mqtt://192.168.142.52:1883';
 const options = {
     username: 'admin',
     password: 'admin',
@@ -100,25 +99,21 @@ function publishDeviceState(deviceName, state) {
 
 
 // Add this endpoint to your existing Express server
-app.post('/api/search-sensor-data', async (req, res) => {
-  try {
-      const { 
-          currentPage = 1, 
-          rowsPerPage = 10, 
-          searchCriteria, 
-          searchValue,
-          startDate,
-          endDate
-      } = req.body;
-
+// Search sensor data endpoint
+app.get('/api/search-sensor-data', async (req, res) => {
+    try {
+      const currentPage = parseInt(req.query.currentPage) || 1;
+      const rowsPerPage = parseInt(req.query.rowsPerPage) || 10;
+      const { searchCriteria, searchValue, startDate, endDate } = req.query;
+  
       // Validate input parameters
-      if (!Number.isInteger(parseInt(currentPage)) || currentPage < 1) {
-          throw new Error('Invalid page number');
+      if (!Number.isInteger(currentPage) || currentPage < 1) {
+        throw new Error('Invalid page number');
       }
-      if (!Number.isInteger(parseInt(rowsPerPage)) || rowsPerPage < 1) {
-          throw new Error('Invalid rows per page');
+      if (!Number.isInteger(rowsPerPage) || rowsPerPage < 1) {
+        throw new Error('Invalid rows per page');
       }
-
+  
       const offset = (currentPage - 1) * rowsPerPage;
       let query = 'SELECT humidity, temperature, lux, datetime FROM esp32_data';
       let countQuery = 'SELECT COUNT(*) as total FROM esp32_data';
@@ -164,62 +159,61 @@ app.post('/api/search-sensor-data', async (req, res) => {
                   break;
           }
       }
-
+  
       // Add where clause to queries if it exists
       if (whereClause) {
-          query += whereClause;
-          countQuery += whereClause;
+        query += whereClause;
+        countQuery += whereClause;
       }
-
+  
       // Add ordering and pagination
       query += ' ORDER BY datetime DESC LIMIT ? OFFSET ?';
       const paginationParams = [parseInt(rowsPerPage), offset];
-
       // Execute both queries using Promise.all
       const [totalCount, data] = await Promise.all([
-          new Promise((resolve, reject) => {
-              connection.query(countQuery, queryParams, (err, results) => {
-                  if (err) reject(err);
-                  else resolve(results[0].total);
-              });
-          }),
-          new Promise((resolve, reject) => {
-              connection.query(
-                  query, 
-                  [...queryParams, ...paginationParams], 
-                  (err, results) => {
-                      if (err) reject(err);
-                      else resolve(results);
-                  }
-              );
-          })
+        new Promise((resolve, reject) => {
+          connection.query(countQuery, queryParams, (err, results) => {
+            if (err) reject(err);
+            else resolve(results[0].total);
+          });
+        }),
+        new Promise((resolve, reject) => {
+          connection.query(
+            query, 
+            [...queryParams, ...paginationParams], 
+            (err, results) => {
+              if (err) reject(err);
+              else resolve(results);
+            }
+          );
+        })
       ]);
-
+  
       // Calculate total pages
       const totalPages = Math.ceil(totalCount / rowsPerPage);
       
       // Send response
       res.json({
-          success: true,
-          data,
-          pagination: {
-              currentPage: parseInt(currentPage),
-              rowsPerPage: parseInt(rowsPerPage),
-              totalCount,
-              totalPages,
-              hasNextPage: currentPage < totalPages,
-              hasPreviousPage: currentPage > 1
-          }
+        success: true,
+        data,
+        pagination: {
+          currentPage: parseInt(currentPage),
+          rowsPerPage: parseInt(rowsPerPage),
+          totalCount,
+          totalPages,
+          hasNextPage: currentPage < totalPages,
+          hasPreviousPage: currentPage > 1
+        }
       });
-
-  } catch (error) {
+  
+    } catch (error) {
       console.error('Error in search-sensor-data:', error);
       res.status(500).json({
-          success: false,
-          error: 'Search operation failed',
-          message: error.message
+        success: false,
+        error: 'Search operation failed',
+        message: error.message
       });
-  }
+    }
 });
 
 
@@ -228,120 +222,114 @@ app.post('/api/search-sensor-data', async (req, res) => {
 
 
 // Add this endpoint to your existing Express server
-app.post('/api/search-switch-state', async (req, res) => {
-  try {
-      const { 
-          currentPage = 1, 
-          rowsPerPage = 10, 
-          startDate,
-          endDate
-      } = req.body;
-
+app.get('/api/search-switch-state', async (req, res) => {
+    try {
+      const currentPage = parseInt(req.query.currentPage) || 1;
+      const rowsPerPage = parseInt(req.query.rowsPerPage) || 10;
+      const { startDate, endDate } = req.query;
+  
       // Validate input parameters
-      if (!Number.isInteger(parseInt(currentPage)) || currentPage < 1) {
-          throw new Error('Invalid page number');
+      if (!Number.isInteger(currentPage) || currentPage < 1) {
+        throw new Error('Invalid page number');
       }
-      if (!Number.isInteger(parseInt(rowsPerPage)) || rowsPerPage < 1) {
-          throw new Error('Invalid rows per page');
+      if (!Number.isInteger(rowsPerPage) || rowsPerPage < 1) {
+        throw new Error('Invalid rows per page');
       }
-
+  
       const offset = (currentPage - 1) * rowsPerPage;
       let query = `
-    SELECT 
-        Devices.id_device as id,
-        switch_states.device_name,
-        switch_states.device_id,
-        switch_states.timestamp,
-        switch_states.state
-    FROM switch_states 
-    INNER JOIN Devices ON switch_states.device_id = Devices.name_device
-`;
-
-let countQuery = `
-    SELECT COUNT(*) as total 
-    FROM switch_states 
-    INNER JOIN Devices ON switch_states.device_id = Devices.name_device
-`;
-
-let whereClause = '';
-let queryParams = [];
-
-// Build where clause based on search criteria
-if (startDate || endDate) {
-    whereClause = ' WHERE ';
-    const conditions = [];
-    if (startDate) {
-        conditions.push('DATE(switch_states.timestamp) >= ?');
-        queryParams.push(startDate);
-    }
-    if (endDate) {
-        conditions.push('DATE(switch_states.timestamp) <= ?');
-        queryParams.push(endDate);
-    }
-    if (conditions.length > 0) {
-        whereClause += conditions.join(' AND ');
-    } else {
-        whereClause = '';
-    }
-}
-
-// Append where clause to queries
-query += whereClause;
-countQuery += whereClause;
-
-  // Add sorting if needed
-  query += ' ORDER BY switch_states.timestamp DESC LIMIT ? OFFSET ?';
+        SELECT 
+          Devices.id_device as id,
+          switch_states.device_name,
+          switch_states.device_id,
+          switch_states.timestamp,
+          switch_states.state
+        FROM switch_states 
+        INNER JOIN Devices ON switch_states.device_id = Devices.name_device
+      `;
+  
+      let countQuery = `
+        SELECT COUNT(*) as total 
+        FROM switch_states 
+        INNER JOIN Devices ON switch_states.device_id = Devices.name_device
+      `;
+  
+      let whereClause = '';
+      let queryParams = [];
+  
+      // Build where clause based on date filters
+      if (startDate || endDate) {
+        whereClause = ' WHERE ';
+        const conditions = [];
+        if (startDate) {
+          conditions.push('DATE(switch_states.timestamp) >= ?');
+          queryParams.push(startDate);
+        }
+        if (endDate) {
+          conditions.push('DATE(switch_states.timestamp) <= ?');
+          queryParams.push(endDate);
+        }
+        if (conditions.length > 0) {
+          whereClause += conditions.join(' AND ');
+        } else {
+          whereClause = '';
+        }
+      }
+  
+      // Append where clause to queries
+      query += whereClause;
+      countQuery += whereClause;
+  
+      // Add sorting and pagination
+      query += ' ORDER BY switch_states.timestamp DESC LIMIT ? OFFSET ?';
       const paginationParams = [parseInt(rowsPerPage), offset];
-
+  
       // Execute both queries using Promise.all
       const [totalCount, data] = await Promise.all([
-          new Promise((resolve, reject) => {
-              connection.query(countQuery, queryParams, (err, results) => {
-                  if (err) reject(err);
-                  else resolve(results[0].total);
-              });
-          }),
-          new Promise((resolve, reject) => {
-              connection.query(
-                  query, 
-                  [...queryParams, ...paginationParams], 
-                  (err, results) => {
-                      if (err) reject(err);
-                      else resolve(results);
-                  }
-              );
-          })
+        new Promise((resolve, reject) => {
+          connection.query(countQuery, queryParams, (err, results) => {
+            if (err) reject(err);
+            else resolve(results[0].total);
+          });
+        }),
+        new Promise((resolve, reject) => {
+          connection.query(
+            query, 
+            [...queryParams, ...paginationParams], 
+            (err, results) => {
+              if (err) reject(err);
+              else resolve(results);
+            }
+          );
+        })
       ]);
-
+  
       // Calculate total pages
       const totalPages = Math.ceil(totalCount / rowsPerPage);
       
       // Send response
       res.json({
-          success: true,
-          data,
-          pagination: {
-              currentPage: parseInt(currentPage),
-              rowsPerPage: parseInt(rowsPerPage),
-              totalCount,
-              totalPages,
-              hasNextPage: currentPage < totalPages,
-              hasPreviousPage: currentPage > 1
-          }
+        success: true,
+        data,
+        pagination: {
+          currentPage: parseInt(currentPage),
+          rowsPerPage: parseInt(rowsPerPage),
+          totalCount,
+          totalPages,
+          hasNextPage: currentPage < totalPages,
+          hasPreviousPage: currentPage > 1
+        }
       });
-
-  } catch (error) {
-      console.error('Error in search-sensor-data:', error);
+  
+    } catch (error) {
+      console.error('Error in search-switch-state:', error);
       res.status(500).json({
-          success: false,
-          error: 'Search operation failed',
-          message: error.message
+        success: false,
+        error: 'Search operation failed',
+        message: error.message
       });
-  }
-});
-
-
-
+    }
+  });
 
 
 app.post('/api/switch-state', async (req, res) => {
